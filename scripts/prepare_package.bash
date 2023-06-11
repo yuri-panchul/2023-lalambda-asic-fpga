@@ -53,38 +53,28 @@ then
         
     git clean -d -n -x
 
-    read -n 1 -r -p "About the remove the files and directories above. Are you sure? "
-    [[ $ REPLY =~ ^[Yy]$ ]] || error "Exiting"
+    read -n 1 -r -p "About to remove the files and directories above. Are you sure? "
+    [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
+
+    git clean -d -f -x
 else
-    info "Not running inside Git repository"
+    info "Not running inside Git repository. Will prompt before removing every directory or a top-level file."
+    rm -i -r [1-9]_*
 fi
 
-if [ -d .git ] ; then
-    info "Running inside Git repository"
-else
-    info "Running outinside Git repository, not all changes might be reverted"
-fi
-
-exit 0
-
-
-rm    -rf public_repository
-mkdir -p  public_repository
-cd        public_repository
-
-cp -r ../misc ../LICENSE ../README.md .
+#-----------------------------------------------------------------------------
 
 git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
   1_fpga_soldering_camp
 
 git clone https://github.com/yuri-panchul/schoolRISCV.git \
-  3_school_risc_v
+  4_school_risc_v
 
 git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
-  4_valid-ready-etc
+  5_valid-ready-etc
 
 git clone https://github.com/yuri-panchul/yrv-plus.git \
-  5_yrv_plus
+  6_yrv_plus
 
 rm -rf */.git
 
@@ -95,6 +85,15 @@ mv * .gitignore ..
 popd
 rm -rf Plus
 popd
+
+#-----------------------------------------------------------------------------
+
+temp_dir=$(mktemp -d)
+package="${repo_name}_$(date '+%Y%m%d')"
+package_path="$temp_dir/$package"
+
+mkdir "$package_path"
+cp -r * .gitignore "$package_path"
 
 #-----------------------------------------------------------------------------
 
@@ -113,9 +112,8 @@ fi
 
 #-----------------------------------------------------------------------------
 
-rm -rf ${pkg_src_root_name}_*.zip
-
-cd "$tgt_pkg_dir"
-
-zip -r "$run_dir/$package_script_oriented.zip" "$package_script_oriented"
-zip -r "$run_dir/$package_gui_oriented.zip"    "$package_gui_oriented"
+pushd "$temp_dir"
+rm -rf "$run_dir/$repo_name"_*.zip
+zip -r "$run_dir/$package.zip" "$package"
+popd
+rm -rf "$temp_dir"
