@@ -40,7 +40,6 @@ error ()
 # -r         do not allow backslashes to escape any characters
 
 read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside\"$repo_dir\". Are you sure? "
-echo
 [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
 if git rev-parse --is-inside-work-tree &> /dev/null
@@ -52,19 +51,25 @@ then
     [ "$true_repo_name" == "$repo_name" ] \
         || error "Unexpected repository name: \"$true_repo_name\" != \"$repo_name\""
         
-    git clean -d -n -x
+    files_to_remove=$(git clean -d -n -x)
+    
+    if [ -n "${files_to_remove-}" ]
+    then
+        info "Files to remove:\n$files_to_remove"
 
-    read -n 1 -r -p "About to remove the files and directories above. Are you sure? "
-    echo
-    [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
+        read -n 1 -r -p "About to remove the files and directories above. Are you sure? "
+        [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
-    git clean -d -f -x
+        git clean -d -f -x
+    fi
 else
     info "Not running inside Git repository. Will prompt before removing every directory or a top-level file."
     rm -i -r [1-9]_*
 fi
 
 #-----------------------------------------------------------------------------
+
+echo
 
 git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
   1_fpga_soldering_camp
@@ -80,7 +85,7 @@ git clone https://github.com/yuri-panchul/yrv-plus.git \
 
 rm -rf */.git
 
-pushd 5_yrv_plus
+pushd 6_yrv_plus
 rm -rf Lattice Xilinx
 pushd Plus
 mv * .gitignore ..
