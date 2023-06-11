@@ -174,7 +174,7 @@ git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
 #  4_school_risc_v
 
 git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
-  5_valid-ready-etc
+  5_valid_ready_etc
 
 git clone https://github.com/yuri-panchul/yrv-plus.git \
   6_yrv_plus
