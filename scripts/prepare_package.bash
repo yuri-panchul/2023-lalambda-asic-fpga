@@ -50,12 +50,12 @@ else
     info "Running inside Git repository"
 
     true_repo_name=$(basename $(git rev-parse --show-toplevel))
-    
+
     [ "$true_repo_name" == "$repo_name" ] \
         || error "Unexpected repository name: \"$true_repo_name\" != \"$repo_name\""
-        
+
     files_to_remove=$(git clean -d -n -x)
-    
+
     if [ -n "${files_to_remove-}" ]
     then
         info "Files to remove:\n$files_to_remove"
