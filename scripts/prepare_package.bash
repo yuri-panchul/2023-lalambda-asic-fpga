@@ -42,8 +42,11 @@ error ()
 read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside\"$repo_dir\". Are you sure? "
 [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
-if git rev-parse --is-inside-work-tree &> /dev/null
+if ! git rev-parse --is-inside-work-tree &> /dev/null
 then
+    info "Not running inside Git repository. Will prompt before removing every directory or a top-level file."
+    rm -i -r [1-9]_*
+else
     info "Running inside Git repository"
 
     true_repo_name=$(basename $(git rev-parse --show-toplevel))
@@ -62,9 +65,104 @@ then
         echo
         git clean -d -f -x
     fi
-else
-    info "Not running inside Git repository. Will prompt before removing every directory or a top-level file."
-    rm -i -r [1-9]_*
+
+    #-------------------------------------------------------------------------
+
+    f=$(git diff --name-status --diff-filter=R HEAD)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are renamed files in the tree."                            \
+              "\nYou should check them in before preparing a release package."  \
+              "\nSpecifically:\n\n$f"
+    fi
+
+    f=$(git ls-files --others --exclude-standard)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are untracked files in the tree."          \
+              "\nYou should either remove or check them in"     \
+              "before preparing a release package."             \
+              "\nSpecifically:\n\n$f"                           \
+              "\n\nYou can also see the file list by running:"  \
+              "\n    git clean -d -n \"$repo_dir\""             \
+              "\n\nAfter reviewing (be careful!),"              \
+              "you can remove them by running:"                 \
+              "\n    git clean -d -f \"$repo_dir\""             \
+              "\n\nNote that \"git clean\" does not see"        \
+              "the files from the .gitignore list."
+    fi
+
+    f=$(git ls-files --others)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are files in the tree, ignored by git,"                    \
+              "based on .gitignore list."                                       \
+              "\nThis repository is not supposed to have the ignored files."    \
+              "\nYou need to remove them before preparing a release package."   \
+              "\nSpecifically:\n\n$f"
+    fi
+
+    f=$(git ls-files --modified)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are modified files in the tree."                           \
+              "\nYou should check them in before preparing a release package."  \
+              "\nSpecifically:\n\n$f"
+    fi
+fi
+
+#-----------------------------------------------------------------------------
+
+# Search for the text files with DOS/Windows CR-LF line endings
+
+# -r     - recursive
+# -l     - file list
+# -q     - status only
+# -I     - Ignore binary files
+# -U     - don't strip CR from text file by default
+# $'...' - string literal in Bash with C semantics ('\r', '\t')
+
+if [ "$OSTYPE" = linux-gnu ] && grep -rqIU $'\r$' *
+then
+    grep -rlIU $'\r$' *
+
+    error "there are text files with DOS/Windows CR-LF line endings." \
+          "You can fix them by doing:" \
+          "\ngrep -rlIU \$'\\\\r\$' \"$repo_dir\"/* | xargs dos2unix"
+fi
+
+exclude_urg="--exclude-dir=urgReport"
+
+if grep -rqI $exclude_urg $'\t' *
+then
+    grep -rlI $exclude_urg $'\t' *
+
+    error "there are text files with tabulation characters." \
+          "\nTabs should not be used." \
+          "\nDevelopers should not need to configure the tab width" \
+          " of their text editors in order to be able to read source code." \
+          "\nPlease replace the tabs with spaces" \
+          "before checking in or creating a package." \
+          "\nYou can find them by doing:" \
+          "\ngrep -rlI $exclude_urg \$'\\\\t' \"$repo_dir\"/*" \
+          "\nYou can fix them by doing the following," \
+          "but make sure to review the fixes:" \
+          "\ngrep -rlI $exclude_urg \$'\\\\t' \"$repo_dir\"/*" \
+          "| xargs sed -i 's/\\\\t/    /g'"
+fi
+
+if grep -rqI $exclude_urg '[[:space:]]\+$' *
+then
+    grep -rlI $exclude_urg '[[:space:]]\+$' *
+
+    error "there are spaces at the end of line, please remove them." \
+          "\nYou can fix them by doing:" \
+          "\ngrep -rlI $exclude_urg '[[:space:]]\\\\+\$' \"$repo_dir\"/*" \
+          "| xargs sed -i 's/[[:space:]]\\\\+\$//g'"
 fi
 
 #-----------------------------------------------------------------------------
