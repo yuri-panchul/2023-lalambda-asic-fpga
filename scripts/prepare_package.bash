@@ -59,7 +59,7 @@ then
 
         read -n 1 -r -p "About to remove the files and directories above. Are you sure? "
         [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
-
+        echo
         git clean -d -f -x
     fi
 else
@@ -68,8 +68,6 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-
-echo
 
 git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
   1_fpga_soldering_camp
