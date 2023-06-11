@@ -40,6 +40,7 @@ error ()
 # -r         do not allow backslashes to escape any characters
 
 read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside\"$repo_dir\". Are you sure? "
+echo
 [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
 if git rev-parse --is-inside-work-tree &> /dev/null
@@ -54,6 +55,7 @@ then
     git clean -d -n -x
 
     read -n 1 -r -p "About to remove the files and directories above. Are you sure? "
+    echo
     [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
     git clean -d -f -x
@@ -67,8 +69,8 @@ fi
 git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
   1_fpga_soldering_camp
 
-git clone https://github.com/yuri-panchul/schoolRISCV.git \
-  4_school_risc_v
+#git clone https://github.com/yuri-panchul/schoolRISCV.git \
+#  4_school_risc_v
 
 git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
   5_valid-ready-etc
