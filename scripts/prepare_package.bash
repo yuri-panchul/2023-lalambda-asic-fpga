@@ -30,6 +30,34 @@ error ()
 
 #-----------------------------------------------------------------------------
 
+if ! command -v zip &> /dev/null
+then
+    printf "$script: cannot find zip utility"
+
+    if [ "$OSTYPE" = "msys" ]
+    then
+        printf "\n$script: download zip for Windows from https://sourceforge.net/projects/gnuwin32/files/zip/3.0/zip-3.0-setup.exe/download"
+        printf "\n$script: then add zip to the path: %s" '%PROGRAMFILES(x86)%\GnuWin32\bin'
+    fi
+
+    exit 1
+fi
+
+if ! command -v unzip &> /dev/null
+then
+    printf "$script: cannot find unzip utility"
+
+    if [ "$OSTYPE" = "msys" ]
+    then
+        printf "\n$script: download unzip for Windows from https://sourceforge.net/projects/gnuwin32/files/unzip/5.51-1/unzip-5.51-1-bin.zip/download"
+        printf "\n$script: then add unzip to the path: %s" '%PROGRAMFILES(x86)%\GnuWin32\bin'
+    fi
+
+    exit 1
+fi
+
+#-----------------------------------------------------------------------------
+
 # -n nchars  return after reading NCHARS characters rather than waiting
 #            for a newline, but honor a delimiter if fewer than
 #            NCHARS characters are read before the delimiter
@@ -39,7 +67,7 @@ error ()
 #
 # -r         do not allow backslashes to escape any characters
 
-read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside\"$repo_dir\". Are you sure? "
+read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside \"$repo_dir\". Are you sure? "
 [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
 
 if ! git rev-parse --is-inside-work-tree &> /dev/null
@@ -170,16 +198,27 @@ fi
 git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
   1_fpga_soldering_camp
 
+#-----------------------------------------------------------------------------
+
+wget -O 2.zip -o 2.wget.log \
+https://github.com/ddvca/2022-bishkek/releases/download/v1.1/2022-bishkek_20220814_224745_labs_only_no_lecture.zip
+
+unzip 2.zip
+
+#-----------------------------------------------------------------------------
+
 #git clone https://github.com/yuri-panchul/schoolRISCV.git \
 #  4_school_risc_v
+
+#-----------------------------------------------------------------------------
 
 git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
   5_valid_ready_etc
 
+#-----------------------------------------------------------------------------
+
 git clone https://github.com/yuri-panchul/yrv-plus.git \
   6_yrv_plus
-
-rm -rf */.git
 
 pushd 6_yrv_plus
 rm -rf Lattice Xilinx
@@ -191,27 +230,16 @@ popd
 
 #-----------------------------------------------------------------------------
 
+rm -rf */.git
+
+#-----------------------------------------------------------------------------
+
 temp_dir=$(mktemp -d)
 package="${repo_name}_$(date '+%Y%m%d')"
 package_path="$temp_dir/$package"
 
 mkdir "$package_path"
 cp -r * .gitignore "$package_path"
-
-#-----------------------------------------------------------------------------
-
-if ! command -v zip &> /dev/null
-then
-    printf "$script: cannot find zip utility"
-
-    if [ "$OSTYPE" = "msys" ]
-    then
-        printf "\n$script: download zip for Windows from https://sourceforge.net/projects/gnuwin32/files/zip/3.0/zip-3.0-setup.exe/download"
-        printf "\n$script: then add zip to the path: %s" '%PROGRAMFILES(x86)%\GnuWin32\bin'
-    fi
-
-    exit 1
-fi
 
 #-----------------------------------------------------------------------------
 
