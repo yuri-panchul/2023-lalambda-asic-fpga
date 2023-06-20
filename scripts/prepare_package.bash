@@ -58,17 +58,22 @@ fi
 
 #-----------------------------------------------------------------------------
 
-# -n nchars  return after reading NCHARS characters rather than waiting
-#            for a newline, but honor a delimiter if fewer than
-#            NCHARS characters are read before the delimiter
-#
-# -p prompt  output the string PROMPT without a trailing newline before
-#            attempting to read
-#
-# -r         do not allow backslashes to escape any characters
+if [ -n "$(git status --porcelain)" ]
+then
+    # -n nchars  return after reading NCHARS characters rather than waiting
+    #            for a newline, but honor a delimiter if fewer than
+    #            NCHARS characters are read before the delimiter
+    #
+    # -p prompt  output the string PROMPT without a trailing newline before
+    #            attempting to read
+    #
+    # -r         do not allow backslashes to escape any characters
 
-read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside \"$repo_dir\". Are you sure? "
-[[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
+    read -n 1 -r -p "The script $script is about to erase the changes you did to the files inside \"$repo_dir\". Are you sure? "
+    [[ $REPLY =~ ^[Yy]$ ]] || error "Exiting"
+fi
+
+#-----------------------------------------------------------------------------
 
 if ! git rev-parse --is-inside-work-tree &> /dev/null
 then
