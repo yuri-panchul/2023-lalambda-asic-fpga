@@ -221,8 +221,8 @@ rm -rf 2.wget.log
 
 #-----------------------------------------------------------------------------
 
-git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
-  5_valid_ready_etc
+#git clone https://gitflic.ru/project/yuri-panchul/valid-ready-etc.git \
+#  5_valid_ready_etc
 
 #-----------------------------------------------------------------------------
 
