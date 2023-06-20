@@ -205,10 +205,13 @@ git clone https://gitflic.ru/project/yuri-panchul/fpga-soldering-camp.git \
 
 #-----------------------------------------------------------------------------
 
-wget -O 2.zip -o 2.wget.log \
+wget -O 2.zip \
 https://github.com/ddvca/2022-bishkek/releases/download/v1.1/2022-bishkek_20220814_224745_labs_only_no_lecture.zip
 
-unzip 2.zip
+unzip 2.zip -d 2_basics_graphics_music
+
+rm -rf 2.zip
+rm -rf 2.wget.log
 
 #-----------------------------------------------------------------------------
 
