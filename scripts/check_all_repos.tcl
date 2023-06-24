@@ -30,12 +30,12 @@ proc check_git_status {dir} {
       \nThere are untracked files in the tree. \
       \nYou should either remove or check them in \
       before preparing a release package. \
-      \n
+      \n \
       \nYou can also see the file list by running: \
-      \n    git clean -d -n \"$dir\" \
-      \nAfter reviewing (be careful!), \
-      \nyou can remove them by running: \
-      \n    git clean -d -f \"$dir\" \
+      \n\n "   " git clean -d -n \"$dir\" \
+      \n\nAfter reviewing (be careful!), \
+      you can remove them by running: \
+      \n\n "   " git clean -d -f \"$dir\" \
       \n\nNote that \"git clean\" does not see \
       the files from the .gitignore list.
   }
