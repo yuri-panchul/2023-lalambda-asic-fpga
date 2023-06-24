@@ -1,7 +1,9 @@
 #!/usr/bin/env tclsh
 
+set script [file tail $::argv0]
+
 proc my_info {args} {
-    set script [file tail $::argv0]
+    global script
     puts stderr "\n$script: [join $args " "]"
 }
 
@@ -97,4 +99,6 @@ if {$argc == 1 && [lindex $argv 0] == "-pull"} {
     cd $repo_path
     git pull
   }
+} elseif {$argc != 0} {
+  my_info "Usage: $script \[-pull\]"
 }
