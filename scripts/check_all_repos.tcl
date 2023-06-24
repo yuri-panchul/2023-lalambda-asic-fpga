@@ -64,7 +64,7 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
   if {! [file isdirectory $parent_path]} { continue }
   cd $parent_path
 
-  foreach project {
+  set repos {
     2022-bishkek
     2023-lalambda-asic-fpga
     basics-music-graphics
@@ -75,12 +75,26 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
     valid-ready-etc-private
     yrv-plus
     yuri-panchul
-  } {
-    set project_path [file join $parent_path $project]
+  }
 
-    if {[file isdirectory $project_path]} {
-      cd $project_path
-      check_git_status $project_path
+  set repo_paths {}
+
+  foreach repo $repos {
+    set repo_path [file join $parent_path $repo]
+
+    if {[file isdirectory $repo_path]} {
+      lappend repo_paths $repo_path
     }
+  }
+}
+
+foreach repo_path $repo_paths {
+  check_git_status $repo_path
+}
+
+if {$argc == 1 && [lindex $argv 0] == "-pull"} {
+  foreach repo_path $repo_paths {
+    cd $repo_path
+    git pull
   }
 }
