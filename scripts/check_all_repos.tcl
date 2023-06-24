@@ -60,7 +60,7 @@ proc check_git_status {dir} {
 }
 
 foreach parent_dir {"" gitflic gitee github gitlab projects} {
-  set parent_path [file join ~ $parent_dir]
+  set parent_path [file join $env(HOME) $parent_dir]
   if {! [file isdirectory $parent_path]} { continue }
   cd $parent_path
 
