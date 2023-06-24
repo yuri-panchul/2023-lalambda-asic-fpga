@@ -97,9 +97,8 @@ foreach repo_path $repo_paths {
 if {$argc == 1 && [lindex $argv 0] == "-pull"} {
   foreach repo_path $repo_paths {
     cd $repo_path
-    puts "before"
-    exec git pull >/dev/null
-    puts "after"
+    exec git pull | tail
+    # >/dev/null
   }
 } elseif {$argc != 0} {
   my_info "Usage: $script \[-pull\]"
