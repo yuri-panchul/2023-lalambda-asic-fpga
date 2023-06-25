@@ -60,7 +60,21 @@ proc check_git_status {dir} {
       \nYou should check them in before preparing a release package.
   }
 
-  puts [exec git status]
+  set not_pushed [exec git log --branches --not --remotes]
+  
+  if {$not_pushed ne ""} {
+    my_error \n$not_pushed \
+      \nThere are commits which are not pushed.
+      \nYou should run \"git push\" before preparing a release package.
+  }
+
+  set not_pushed [exec git cherry -v]
+  
+  if {$not_pushed ne ""} {
+    my_error \n$not_pushed \
+      \nThere are commits which are not pushed (checked using \"git cherry\").
+      \nYou should run \"git push\" before preparing a release package.
+  }
 }
 
 foreach parent_dir {"" gitflic gitee github gitlab projects} {
@@ -99,7 +113,7 @@ foreach repo_path $repo_paths {
 if {$argc == 1 && [lindex $argv 0] == "-pull"} {
   foreach repo_path $repo_paths {
     cd $repo_path
-    exec git pull | tail
+    puts [exec git pull | tail]
   }
 } elseif {$argc != 0} {
   my_info "Usage: $script \[-pull\]"
