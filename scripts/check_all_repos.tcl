@@ -113,8 +113,8 @@ foreach repo_path $repo_paths {
 if {$argc == 1 && [lindex $argv 0] == "-pull"} {
   foreach repo_path $repo_paths {
     cd $repo_path
-    [catch { exec git pull } result]
-    puts $result
+    set pulled [exec git pull]
+    puts $pulled
   }
 } elseif {$argc != 0} {
   my_info "Usage: $script \[-pull\]"
