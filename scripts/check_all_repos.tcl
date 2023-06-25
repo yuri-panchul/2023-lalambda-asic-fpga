@@ -115,9 +115,9 @@ if {$argc == 1 && [lindex $argv 0] == "-pull"} {
     cd $repo_path
 
     if {[catch { exec git pull } ret]} {
-      my_error $ret
+      my_error "$repo_path: $ret"
     } else {
-      my_info $ret
+      my_info "$repo_path: $ret"
     }
   }
 } elseif {$argc != 0} {
