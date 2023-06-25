@@ -60,19 +60,19 @@ proc check_git_status {dir} {
       \nYou should check them in before preparing a release package.
   }
 
-  set not_pushed [exec git cherry -v | tail]
-
-  if {$not_pushed ne ""} {
-    my_error \n$not_pushed \
-      \nThere are commits which are not pushed (checked using \"git cherry\").
-      \nYou should run \"git push\" before preparing a release package.
-  }
-
   set not_pushed [exec git log --branches --not --remotes | tail]
   
   if {$not_pushed ne ""} {
     my_error \n$not_pushed \
       \n\nThere are commits which are not pushed.
+      \nYou should run \"git push\" before preparing a release package.
+  }
+
+  set not_pushed [exec git cherry -v | tail]
+
+  if {$not_pushed ne ""} {
+    my_error \n$not_pushed \
+      \n\nThere are commits which are not pushed (checked using \"git cherry\").
       \nYou should run \"git push\" before preparing a release package.
   }
 }
