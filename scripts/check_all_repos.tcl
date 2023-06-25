@@ -60,7 +60,7 @@ proc check_git_status {dir} {
       \nYou should check them in before preparing a release package.
   }
 
-  set not_pushed [exec git cherry -v | tail]
+  set not_pushed [exec git cherry -v]
 
   if {$not_pushed ne ""} {
     my_error \n$not_pushed \
@@ -68,7 +68,7 @@ proc check_git_status {dir} {
       \nYou should run \"git push\" before preparing a release package.
   }
 
-  set not_pushed [exec git log --branches --not --remotes | tail]
+  set not_pushed [exec git log --branches --not --remotes]
   
   if {$not_pushed ne ""} {
     my_error \n$not_pushed \
@@ -114,7 +114,7 @@ if {$argc == 1 && [lindex $argv 0] == "-pull"} {
   foreach repo_path $repo_paths {
     cd $repo_path
 
-    if {[catch { exec git pull | tail } ret]} {
+    if {[catch { exec git pull } ret]} {
       my_error $ret
     }
   }
