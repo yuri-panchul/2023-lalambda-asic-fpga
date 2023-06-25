@@ -59,6 +59,8 @@ proc check_git_status {dir} {
       \nThere are modified files in the tree. \
       \nYou should check them in before preparing a release package.
   }
+
+  exec git status
 }
 
 foreach parent_dir {"" gitflic gitee github gitlab projects} {
