@@ -60,7 +60,7 @@ proc check_git_status {dir} {
       \nYou should check them in before preparing a release package.
   }
 
-  exec git status
+  puts [exec git status]
 }
 
 foreach parent_dir {"" gitflic gitee github gitlab projects} {
