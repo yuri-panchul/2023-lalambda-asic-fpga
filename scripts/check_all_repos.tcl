@@ -116,6 +116,8 @@ if {$argc == 1 && [lindex $argv 0] == "-pull"} {
 
     if {[catch { exec git pull } ret]} {
       my_error $ret
+    } else {
+      my_info $ret
     }
   }
 } elseif {$argc != 0} {
