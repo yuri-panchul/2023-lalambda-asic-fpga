@@ -86,6 +86,7 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
     2022-bishkek
     2023-lalambda-asic-fpga
     basics-music-graphics
+    basics-graphics-music
     fpga-soldering-camp
     schoolRISCV
     systemverilog-homework-private
