@@ -17,18 +17,18 @@ proc check_git_status {dir} {
   if {! [file isdirectory ".git"]} { return }
   my_info $dir
 
-  set files [exec git diff --name-status --diff-filter=R HEAD]
+  set ret [exec git diff --name-status --diff-filter=R HEAD]
 
-  if {$files ne ""} {
-    my_error \n$files \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \nThere are renamed files in the tree. \
       \nYou should check them in before preparing a release package.
   }
 
-  set files [exec git ls-files --others --exclude-standard]
+  set ret [exec git ls-files --others --exclude-standard]
 
-  if {$files ne ""} {
-    my_error \n$files \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \nThere are untracked files in the tree. \
       \nYou should either remove or check them in \
       before preparing a release package. \
@@ -42,36 +42,36 @@ proc check_git_status {dir} {
       the files from the .gitignore list.
   }
 
-  set files [exec git ls-files --others]
+  set ret [exec git ls-files --others]
 
-  if {$files ne ""} {
-    my_error \n$files \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \nThere are files in the tree, ignored by git, \
       based on .gitignore list. \
       \nThis repository is not supposed to have the ignored files. \
       \nYou need to remove them before preparing a release package.
   }
 
-  set files [exec git ls-files --modified]
+  set ret [exec git ls-files --modified]
 
-  if {$files ne ""} {
-    my_error \n$files \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \nThere are modified files in the tree. \
       \nYou should check them in before preparing a release package.
   }
 
-  set not_pushed [exec git cherry -v | tail]
+  set ret [exec git cherry -v]
 
-  if {$not_pushed ne ""} {
-    my_error \n$not_pushed \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \n\nThere are commits which are not pushed (checked using \"git cherry\").
       \nYou should run \"git push\" before preparing a release package.
   }
 
-  set not_pushed [exec git log --branches --not --remotes | tail]
+  set ret [exec git log --branches --not --remotes]
   
-  if {$not_pushed ne ""} {
-    my_error \n$not_pushed \
+  if {$ret ne ""} {
+    my_error \n$ret \
       \n\nThere are commits which are not pushed (checked using \"git log\").
       \nYou should run \"git push\" before preparing a release package.
   }
@@ -86,6 +86,7 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
     2022-bishkek
     2023-lalambda-asic-fpga
     basics-music-graphics
+    basics-graphics-music
     fpga-soldering-camp
     schoolRISCV
     systemverilog-homework-private
@@ -113,7 +114,12 @@ foreach repo_path $repo_paths {
 if {$argc == 1 && [lindex $argv 0] == "-pull"} {
   foreach repo_path $repo_paths {
     cd $repo_path
-    exec git pull
+
+    if {[catch { exec git pull } ret]} {
+      my_error "$repo_path: $ret"
+    } else {
+      my_info "$repo_path: $ret"
+    }
   }
 } elseif {$argc != 0} {
   my_info "Usage: $script \[-pull\]"
