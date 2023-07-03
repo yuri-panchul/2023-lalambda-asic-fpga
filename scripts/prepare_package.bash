@@ -110,6 +110,39 @@ else
               "\nSpecifically:\n\n$f"
     fi
 
+    f=$(git ls-files --others --exclude-standard ..)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are untracked files in the tree."             \
+              "\nYou should either remove or check them in"        \
+              "before preparing a release package."                \
+              "\nSpecifically:\n\n$f"                              \
+              "\n\nYou can also see the file list by running:"     \
+              "\n    (cd \"$repo_dir\" ; git clean -d -n)"         \
+              "\n\nAfter reviewing (be careful!),"                 \
+              "you can remove them by running:"                    \
+              "\n    (cd \"$repo_dir\" ; git clean -d -f)"         \
+              "\n\nNote that \"git clean\" without \"-x\" option"  \
+              "does not see the files from the .gitignore list."
+    fi
+
+    f=$(git ls-files --others ..)
+
+    if [ -n "${f-}" ]
+    then
+        error "there are files in the tree, ignored by git,"                   \
+              "based on .gitignore list."                                      \
+              "\nThis repository is not supposed to have the ignored files."   \
+              "\nYou need to remove them before preparing a release package."  \
+              "\nSpecifically:\n\n$f"                                          \
+              "\n\nYou can also see the file list by running:"                 \
+              "\n    (cd \"$repo_dir\" ; git clean -d -x -n)"                  \
+              "\n\nAfter reviewing (be careful!),"                             \
+              "you can remove them by running:"                                \
+              "\n    (cd \"$repo_dir\" ; git clean -d -x -f)"
+    fi
+
     f=$(git ls-files --others --exclude-standard)
 
     if [ -n "${f-}" ]

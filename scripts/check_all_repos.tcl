@@ -34,12 +34,12 @@ proc check_git_status {dir} {
       before preparing a release package. \
       \n \
       \nYou can also see the file list by running: \
-      \n\n "   " git clean -d -n \"$dir\" \
+      \n\n "   " (cd \"$dir\" \; git clean -d -n) \
       \n\nAfter reviewing (be careful!), \
       you can remove them by running: \
-      \n\n "   " git clean -d -f \"$dir\" \
-      \n\nNote that \"git clean\" does not see \
-      the files from the .gitignore list.
+      \n\n "   " (cd \"$dir\" \; git clean -d -f) \
+      \n\nNote that \"git clean\" without \"-x\" option \
+      does not see the files from the .gitignore list.
   }
 
   set ret [exec git ls-files --others]
@@ -49,7 +49,12 @@ proc check_git_status {dir} {
       \nThere are files in the tree, ignored by git, \
       based on .gitignore list. \
       \nThis repository is not supposed to have the ignored files. \
-      \nYou need to remove them before preparing a release package.
+      \nYou need to remove them before preparing a release package. \
+      \nYou can also see the file list by running: \
+      \n\n "   " (cd \"$dir\" \; git clean -d -x -n) \
+      \n\nAfter reviewing (be careful!), \
+      you can remove them by running: \
+      \n\n "   " (cd \"$dir\" \; git clean -d -x -f) \
   }
 
   set ret [exec git ls-files --modified]
