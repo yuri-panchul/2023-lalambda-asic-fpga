@@ -121,7 +121,9 @@ if {$argc == 1 && [lindex $argv 0] == "-pull"} {
     cd $repo_path
 
     if {[catch { exec git pull } ret]} {
-      my_error "$repo_path: $ret"
+      my_info "$repo_path: $ret"
+      my_info "Please review and re-run the script"
+      exit 0
     } else {
       my_info "$repo_path: $ret"
     }
