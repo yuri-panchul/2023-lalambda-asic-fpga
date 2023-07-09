@@ -31,9 +31,9 @@ is_command_available_or_error ()
 
 #-----------------------------------------------------------------------------
 
-image=230610_slinux.img
+drive_image=230610_slinux.img
 
-#[ -f "$image" ] || error "Expecting file \"$image\" in the current directory"
+[ -f "$drive_image" ] || error "Expecting file \"$drive_image\" in the current directory"
 
 #-----------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ sudo partprobe -d -s $drive || true
 
 #-----------------------------------------------------------------------------
 
-seek_value=$((($(blockdev --getsize64 $drive)-4096)/4096))
+seek_value=$((($(sudo blockdev --getsize64 $drive)-4096)/4096))
 
 info "Seek value to erase the second GPT: $seek_value"
 
@@ -89,10 +89,10 @@ info "Seek value to erase the second GPT: $seek_value"
 # -r        do not allow backslashes to escape any characters
 # -s        do not echo input coming from a terminal
 
-info "\nAre you absolutely positively sure"               \
-     "\nyou want to erase your SSD,"                      \
-     "\ndestroy all its partition tables"                 \
-     "\nand write a new image from the file \"$image\"?"  \
+info "\nAre you absolutely positively sure"                           \
+     "\nyou want to erase your SSD,"                                  \
+     "\ndestroy all its partition tables"                             \
+     "\nand write a new drive image from the file \"$drive_image\"?"  \
 
 read -r -p "Type \"I SWEAR!\" : "
 
@@ -103,8 +103,21 @@ fi
 
 #-----------------------------------------------------------------------------
 
-cmd="dd if=/dev/zero of=$drive bs=4096 seek=$seek_value"
+cmd="sudo dd if=/dev/zero of=$drive bs=4096 seek=$seek_value"
+info "Erasing the backup GPT. If you see an error it is normal: $cmd"
+$cmd || true
 
-$cmd || error "Cannot $cmd"
+cmd="sudo dd if=/dev/zero of=$drive bs=4096 seek=0 count=1"
+info "Erasing the primary GPT: $cmd"
+$cmd || true
 
+info "Now all the partition tables should be erased:"
+sudo partprobe -d -s $drive || true
+
+info "Finally, the main copying:"
+
+sudo dd if="$drive_image" of=$drive bs=1M status=progress && sync \
+    || error "Something is wrong"
+
+info "Success, $drive_image is on $drive"
 exit 0
