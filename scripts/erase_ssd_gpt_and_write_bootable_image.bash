@@ -112,7 +112,6 @@ info "Seek value to erase the second GPT: $seek_value"
 #           attempting to read
 #
 # -r        do not allow backslashes to escape any characters
-# -s        do not echo input coming from a terminal
 
 info "\nAre you absolutely positively sure"                           \
      "\nyou want to erase your SSD,"                                  \
