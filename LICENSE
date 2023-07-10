@@ -4,7 +4,8 @@ MIT License
 
 2023-lalambda-asic-fpga:
 
-Copyright (c) 2023 Yuri Panchul.
+Copyright (c) 2023 Yuri Panchul,
+with contributions from Alex Belits and Anton Midyukov
 
 1_fpga_soldering_camp:
 
@@ -21,8 +22,8 @@ Copyright (c) 2021-2023 Yuri Panchul.
 
 4_school_riscv:
 
-Copyright (c) 2017 Stanislav Zhelnio and Alexander Romanov, with
-contributions of others.
+Copyright (c) 2017 Stanislav Zhelnio and Alexander Romanov,
+with contributions from others.
 
 5_valid_ready_etc:
 
