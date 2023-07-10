@@ -59,7 +59,6 @@ is_command_available_or_error ()
 }
 
 is_command_available_or_error partprobe
-# TO REMOVE is_command_available_or_error sgdisk
 
 #-----------------------------------------------------------------------------
 
@@ -142,14 +141,5 @@ info "Now all the partition tables should be erased:"
 info "Finally, the main copying:"
 (set -x; dd if="$drive_image" of=$drive bs=1M status=progress && sync) \
     || error "Something is wrong"
-
-# info "Checking the partition table after the main copying:"
-# (set -x; partprobe -d -s $drive) || true
-
-# info "To make sure the backup GPT is the same as the main one, run:"
-# (set -x; sgdisk -g $drive) || error "Something is wrong"
-
-# info "The final check of the partition table:"
-# (set -x; partprobe -d -s $drive) || true
 
 info "Success, $drive_image is on $drive"
