@@ -89,9 +89,10 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
 
   set repos {
     2022-bishkek
+    2023-georgia-armenia-exam
     2023-lalambda-asic-fpga
-    basics-music-graphics
     basics-graphics-music
+    basics-music-graphics
     fpga-soldering-camp
     schoolRISCV
     systemverilog-homework-private
