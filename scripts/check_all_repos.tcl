@@ -95,6 +95,7 @@ foreach parent_dir {"" gitflic gitee github gitlab projects} {
     basics-music-graphics
     fpga-soldering-camp
     schoolRISCV
+    systemverilog-homework
     systemverilog-homework-private
     valid-ready-etc
     valid-ready-etc-private
